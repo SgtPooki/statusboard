@@ -1,13 +1,13 @@
 'use strict'
 const path = require('path')
 
-function convertMonoRepoToProjectsArray (repo, names, configOverrides = {}) {
-  return names.map(name => {
+function convertMonoRepoToProjectsArray (repo, names, configOverrides = []) {
+  return names.map((name, i) => {
     return {
       // name,
       repo,
       repoDirectory: `./packages/${name}`,
-      ...configOverrides
+      ...(configOverrides[i] || {})
     }
   })
 }
