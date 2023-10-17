@@ -1,6 +1,17 @@
 'use strict'
 const path = require('path')
 
+function convertMonoRepoToProjectsArray (repo, names, configOverrides = {}) {
+  return names.map(name => {
+    return {
+      // name,
+      repo,
+      repoDirectory: `./packages/${name}`,
+      ...configOverrides
+    }
+  })
+}
+
 module.exports = {
   db: path.join(__dirname, 'tmp', 'data.db'),
   baseUrl: '/statusboard',
@@ -12,24 +23,22 @@ module.exports = {
   title: 'Helia StatusBoard',
   description: 'StatusBoard',
 
-  // orgs: [
-  //   'ipfs'
-  // ],
+  orgs: [],
+
   /** @type {import('./types.js').Project} */
   projects: [
-    // 'nodejs/package-maintenance',
-    {
-      name: 'Helia',
-      repo: 'ipfs/helia',
-      repoBranch: 'main'
-    },
+    ...convertMonoRepoToProjectsArray('ipfs/helia', ['helia', 'interface']),
     {
       name: 'Helia Examples',
-      repo: 'ipfs-examples/helia-examples'
+      repo: 'ipfs-examples/helia-examples',
+      skipNpm: true
     },
-    'ipfs/helia-docker',
+    {
+      repo: 'ipfs/helia-docker',
+      skipNpm: true
+    },
     'ipfs/helia-remote-pinning',
-    'ipfs/helia-routing-v1-http-api',
+    ...convertMonoRepoToProjectsArray('ipfs/helia-routing-v1-http-api', ['client', 'server']),
     'ipfs/helia-unixfs',
     'ipfs/helia-strings',
     'ipfs/helia-car',
@@ -38,7 +47,7 @@ module.exports = {
     'ipfs/helia-ipns',
     'ipfs/helia-mfs',
     'ipfs/helia-dag-json',
-    'ipfs/helia-cli'
+    { repo: 'ipfs/helia-cli', skipNpm: true }
   ],
 
   issueLabels: ['need/triage', 'P0', 'P1', 'P2', 'P3', 'good first issue', 'help wanted', 'status/ready'],
