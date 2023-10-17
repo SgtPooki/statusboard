@@ -36,9 +36,23 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - uses: ipfs/aegir/actions/cache-node-modules@master
+      - if: ${{ runner.os != 'Windows' }}
+        uses: actions/cache@v3
+        id: cache
         with:
-          build_on_cache_fail: false
+          path: |
+            ~/.npm
+            ~/.cache
+            ./dist
+            ./types
+            ./node_modules
+            ./packages/*/dist
+            ./packages/*/types
+            ./packages/*/node_modules
+          key: ${{ runner.os }}-build-${{ github.sha }}
+      - if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+        shell: bash
       - run: npm run build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
