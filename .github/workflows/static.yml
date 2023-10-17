@@ -37,9 +37,11 @@ jobs:
         with:
           node-version: 18
       - uses: ipfs/aegir/actions/cache-node-modules@master
+        with:
+          build_on_cache_fail: false
       - run: npm run build
-      - run: npm run index
-      - run: npm run site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
