@@ -8,6 +8,7 @@ interface ProjectObjectBase {
   repoDirectory?: string
   repoName?: string
   repoOwner?: string
+  skipNpm?: boolean
 }
 
 interface ProjectObject_repo extends ProjectObjectBase{
