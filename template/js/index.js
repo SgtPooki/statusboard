@@ -111,9 +111,7 @@ require('nighthawk')({
       </statusboard-page>
     `, document.body)
   })
-  .get('/issues', fetchIssues(), async (req, res) => {
-    const userActivity = await (await fetch(`${config.baseUrl}/data/userActivity.json`)).json()
-
+  .get('/issues', fetchIssues(), (req, res) => {
     render(html`
       <statusboard-page .config="${config}">
         <main>
