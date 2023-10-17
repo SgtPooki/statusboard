@@ -9,6 +9,29 @@ class ProjectList extends LitElement {
       projects: { type: Object }
     }
   }
+  getProjectTitleCell (project) {
+    // ${project.packageName ? ': ' + project.packageName : ''}
+    const lines = [
+      html`<a href="https://www.github.com/${project.repoOwner}" target="_blank">${project.repoOwner}</a>`
+    ]
+    if (project.repoDetails && project.repoDetails.url) {
+      lines.push(html`<a href="${(project.repoDetails && project.repoDetails.url) || `https://www.github.com/${project.repoOwner}/${project.repoName}`}" target="_blank">${project.repoName}</a>`)
+    } else {
+      lines.push(html`<a href="https://www.github.com/${project.repoOwner}/${project.repoName}" target="_blank">${project.repoName}</a>`)
+    }
+
+    if (project.repoDirectory !== '/') {
+      lines.push(html`<a href="https://www.github.com/${project.repoOwner}/${project.repoName}/tree/${project.repoBranch}/${project.repoDirectory.replace('./', '')}" target="_blank">${project.repoDirectory.replace('./', '')}</a>`)
+    }
+    // if (project.packageName) {
+    //   lines.push(`<a href="https://npmjs.org/package/${project.packageName}" target="_blank">${project.packageName}</a>`)
+    // }
+    return html`
+      <td>
+        ${lines.map((line, i) => html`${i === 0 ? '' : ' / '}${line}`)}
+      </td>
+    `
+  }
   render () {
     return html`
       <link rel="stylesheet" href="${this.config.files.css.projectList}" />
@@ -16,10 +39,7 @@ class ProjectList extends LitElement {
       <table class="project-list">
         ${this.projects.map((project) => html`
           <tr>
-            <td>
-              <a href="https://www.github.com/${project.repoOwner}" target="_blank">${project.repoOwner}</a>
-              / <a href="${(project.repoDetails && project.repoDetails.url) || `https://www.github.com/${project.repoOwner}/${project.repoName}`}" target="_blank">${project.repoName}</a>
-            </td>
+            ${this.getProjectTitleCell(project)}
             <td title="Stars">
               <a href="https://npmjs.org/package/${project.packageName}">
                 <img src="https://badgen.net/github/stars/${project.repo}?color=yellow" />

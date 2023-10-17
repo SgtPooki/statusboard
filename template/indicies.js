@@ -7,7 +7,7 @@ module.exports = {
     }
 
     data = data || []
-    const existing = data.find((p) => p.repo === project.repo)
+    const existing = data.find((p) => p.repo === project.repo && p.repoBranch === project.repoBranch && p.repoDirectory === project.repoDirectory && p.packageName === project.packageName)
     const proj = existing || { ...project }
     switch (type) {
       case 'TRAVIS':
