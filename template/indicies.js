@@ -93,13 +93,8 @@ module.exports = {
       return data
     }
 
-    const labelNames = config.issueLabels.map((label) => label.name)
+    // label filtering happens in `template/js/index.js`'s fetchIssues method.
     return detail.labels.reduce((labels, label) => {
-      // Check that it is a label we care about
-      if (!labelNames.includes(label.name)) {
-        return labels
-      }
-
       labels[label.name] = labels[label.name] || []
       const d = {
         label: label,

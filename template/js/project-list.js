@@ -128,8 +128,6 @@ class ProjectList extends LitElement {
           acc.forks += project.repoDetails.forks
           acc.openIssues += project.repoDetails.openIssues
           acc.pullRequests += (project.repoDetails.pullRequests || 0)
-          console.log(`${project.repoDetails.url}: project.repoDetails.pullRequests: `, project.repoDetails.pullRequests);
-          console.log(`${project.repoDetails.url}: project.repoDetails: `, project.repoDetails);
         }
       } else {
         console.log(`no repo details for ${project.repo} at ${project.repoDetails.url}`)
