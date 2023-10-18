@@ -59,7 +59,7 @@ class ProjectList extends LitElement {
         </td>
         <td title="Watchers">
           ${duplicateGithubUrl ? '↑' : html`<a href="https://www.github.com/${project.repo}">
-            <img src="https://badgen.net/github/watchers/${project.repo}" />
+            <img src="https://badgen.net/static/watchers/${project.repoDetails.watchers}/blue" />
           </a>`}
         </td>
         <td title="Issues">
