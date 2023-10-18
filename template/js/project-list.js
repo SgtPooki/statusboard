@@ -88,14 +88,14 @@ class ProjectList extends LitElement {
           </a>`}
         </td>
         <td>
-          ${project.packageJson && (html`
+          ${project.skipNpm ? '' : project.packageJson && (html`
             <a href="https://npmjs.org/package/${project.packageName}">
               <img src="https://badgen.net/npm/v/${project.packageName}" />
             </a>
           `)}
         </td>
         <td>
-          ${project.packageJson && (html`
+          ${project.skipNpm ? '' : project.packageJson && (html`
             <a href="https://npmjs.org/package/${project.packageName}">
               <img src="https://badgen.net/npm/dm/${project.packageName}" />
             </a>
@@ -112,12 +112,53 @@ class ProjectList extends LitElement {
     `
   }
 
+  /**
+   *
+   */
+  renderTotals() {
+    const setOfProjectGithubUrls = new Set()
+    const totals = this.projects.reduce((acc, project) => {
+      const projectGithubUrl = this.getProjectRootGithubUrl(project)
+      const alreadyAddedForRepo = setOfProjectGithubUrls.has(projectGithubUrl)
+      setOfProjectGithubUrls.add(projectGithubUrl)
+      if (project.repoDetails != null) {
+        if (!alreadyAddedForRepo) {
+          acc.stars += project.repoDetails.stars
+          acc.watchers += project.repoDetails.watchers
+          acc.forks += project.repoDetails.forks
+          acc.openIssues += project.repoDetails.openIssues
+          acc.pullRequests += (project.repoDetails.pullRequests || 0)
+          console.log(`${project.repoDetails.url}: project.repoDetails.pullRequests: `, project.repoDetails.pullRequests);
+          console.log(`${project.repoDetails.url}: project.repoDetails: `, project.repoDetails);
+        }
+      } else {
+        console.log(`no repo details for ${project.repo} at ${project.repoDetails.url}`)
+      }
+      return acc
+    }, {stars: 0, watchers: 0, forks: 0, openIssues: 0, pullRequests: 0})
+    return html`
+      <tr>
+        <td><b>Totals</b></td>
+        <td>${totals.stars}</td>
+        <td>${totals.watchers}</td>
+        <td>${totals.openIssues}</td>
+        <td>${totals.pullRequests}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    `
+  }
+
   render () {
     return html`
       <link rel="stylesheet" href="${this.config.files.css.projectList}" />
       <h2>Projects</h2>
       <table class="project-list">
         ${this.projects.map(this.getRow)}
+        ${this.renderTotals()}
       </table>
     `
   }

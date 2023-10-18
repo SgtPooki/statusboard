@@ -1,13 +1,20 @@
 'use strict'
 
 module.exports = {
-  projects: async (data, config, key, { type, project, detail }) => {
+  projects: (data, config, key, { type, project, detail }) => {
     if (!['REPO', 'PACKAGE_JSON', 'PACKUMENT', 'TRAVIS'].includes(type)) {
       return data
     }
 
     data = data || []
-    const existing = data.find((p) => p.repo === project.repo && p.repoBranch === project.repoBranch && p.repoDirectory === project.repoDirectory && p.packageName === project.packageName)
+    const existing = data.find((p) => {
+      const orgMatches = p.repoOwner === project.repoOwner
+      const repoNameMatches = p.repoName === project.repoName
+      const repoMatches = p.repo === project.repo
+      const packageNameMatches = p.packageName === project.packageName
+      return orgMatches && repoNameMatches && repoMatches && packageNameMatches
+    })
+
     const proj = existing || { ...project }
     switch (type) {
       case 'TRAVIS':
@@ -22,6 +29,8 @@ module.exports = {
       case 'PACKUMENT':
         proj.packument = detail
         break
+      default:
+        // console.log(`projects: Unknown type '${type}'`)
     }
     // When adding for the first time, unshift it (maintains order),
     // otherwise we are just modifying it in place
@@ -32,7 +41,7 @@ module.exports = {
     return data
   },
 
-  userActivity: async (data, config, key, { type, project, detail }) => {
+  userActivity: (data, config, key, { type, project, detail }) => {
     if (!['ACTIVITY', 'COMMIT'].includes(type)) {
       return data
     }
@@ -79,7 +88,7 @@ module.exports = {
     return data
   },
 
-  labeledIssues: async (data, config, key, { type, project, detail }) => {
+  labeledIssues: (data, config, key, { type, project, detail }) => {
     if (type !== 'ISSUE' || detail.state !== 'OPEN') {
       return data
     }
